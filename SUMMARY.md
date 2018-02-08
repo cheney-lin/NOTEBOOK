@@ -9,4 +9,10 @@
   * [进程间同步](sync/process-sync.md)
   * [virtio通知机制](sync/virtio-notify.md)
   * [spinlock](sync/spinlock.md)
+* 进程和调度
+  * [Linux的内核抢占](process-and-sched/kernel-preempt.md)
+  * [Linux调度器源码分析](process-and-sched/sched-source.md)
+  * [若干问题](process-and-sched/some-problem.md)
+  * [进程调度系列文章](process-and-sched/sched-series.md)
+
 
