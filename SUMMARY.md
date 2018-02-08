@@ -7,4 +7,5 @@
   * [编译参数](QEMU/x86-compile-conf.md)
 * [同步](tong-bu.md)
   * [进程间同步](sync/process-sync.md)
+  * [virtio通知机制](sync/virtio-notify.md)
 
