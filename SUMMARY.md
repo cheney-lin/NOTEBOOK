@@ -10,4 +10,3 @@
   * [virtio通知机制](sync/virtio-notify.md)
   * [spinlock](sync/spinlock.md)
 
-
