@@ -38,6 +38,52 @@ struct RAMBlock {
 };
 
 ```
+## Memory region
+```c
+struct MemoryRegion {                                                                                                                                                  
+    Object parent_obj;                                                                                                                                                 
+                                                                                                                                                                       
+    /* All fields are private - violators will be prosecuted */                                                                                                        
+                                                                                                                                                                       
+    /* The following fields should fit in a cache line */                                                                                                              
+    bool romd_mode;                                                                                                                                                    
+    bool ram;                                                                                                                                                          
+    bool subpage;                                                                                                                                                      
+    bool readonly; /* For RAM regions */ //比如pc.rom                                                                                                                              
+    bool rom_device;                                                                                                                                                   
+    bool flush_coalesced_mmio;                                                                                                                                         
+    bool global_locking;                                                                                                                                               
+    uint8_t dirty_log_mask;                                                                                                                                            
+    bool is_iommu;                                                                                                                                                     
+    RAMBlock *ram_block;      //如果该mr申请了内存就指向它的RAMBlock，否则为NULL                                                                                                                                   
+    Object *owner;  属于哪个设备                                                                                                                                                 
+                                                                                                                                                                       
+    const MemoryRegionOps *ops;        //对mr操作的callback函数，比如读写                                                                                                                             
+    void *opaque;                                                                                                                                                      
+    MemoryRegion *container;   //父mr                                                                                                                                        
+    Int128 size;         //mr的大小                                                                                                                  
+    hwaddr addr;      //相对父mr的偏移，起始GPA=base+addr 可以去源码中搜索一下如何初始化的就明白了                                                                                                        
+    void (*destructor)(MemoryRegion *mr);                                                                                                                              
+    uint64_t align;                                                                                                                                                    
+    bool terminates;                                                                                                                                                   
+    bool ram_device;                                                                                                                                                   
+    bool enabled;                                                                                                                                                      
+    bool warning_printed; /* For reservations */                                                                                                                       
+    uint8_t vga_logging_count;                                                                                                                                         
+    MemoryRegion *alias;     // 如果本mr是个alias mr，这个字段指向真实的mr，否则为NULL                                                                                                            
+    hwaddr alias_offset;        //如果本mr是个alias mr，这个字段表示在真实的mr中的偏移                                                                                                             
+    int32_t priority;      //优先级，属于同一个mr的subregions中高优先级的mr会被优先渲染                                                                                                                                              
+    QTAILQ_HEAD(subregions, MemoryRegion) subregions;                                                                                                                  
+    QTAILQ_ENTRY(MemoryRegion) subregions_link;                                                                                                                        
+    QTAILQ_HEAD(coalesced_ranges, CoalescedMemoryRange) coalesced;                                                                                                     
+    const char *name;                                                                                                                                                  
+    unsigned ioeventfd_nb;                                                                                                                                             
+    MemoryRegionIoeventfd *ioeventfds;                                                                                                                                 
+};                                                                                                                                                                     
+```
+
+
+
 
 
 
