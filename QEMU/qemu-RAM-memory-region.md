@@ -6,29 +6,42 @@ ivshmem设备的共享内存
 hugupage fs
 
 ## RAM blocks
-每个RAM类型的mr都会有一个RAM
+每个RAM类型的mr都会有一个RAMBlock *ram_block，
+
 
 
 ``` c
-struct MemoryRegion {
-    Object parent_obj;
-
-    /* All fields are private - violators will be prosecuted */
-
-    /* The following fields should fit in a cache line */
-    bool romd_mode;
-    bool ram;
-    bool subpage;
-    bool readonly; /* For RAM regions */
-    bool rom_device;
-    bool flush_coalesced_mmio;
-    bool global_locking;
-    uint8_t dirty_log_mask;
-    bool is_iommu;
-    RAMBlock *ram_block;
-    Object *owner;
+struct RAMBlock {
+    struct rcu_head rcu;
+    struct MemoryRegion *mr;
+    uint8_t *host;
+    ram_addr_t offset;
+    ram_addr_t used_length;
+    ram_addr_t max_length;
+    void (*resized)(const char*, uint64_t length, void *host);
+    uint32_t flags;
+    /* Protected by iothread lock.  */
+    char idstr[256];
+    /* RCU-enabled, writes protected by the ramlist lock */
+    QLIST_ENTRY(RAMBlock) next;
+    QLIST_HEAD(, RAMBlockNotifier) ramblock_notifiers;
+    int fd;
+    size_t page_size;
+    /* dirty bitmap used during migration */
+    unsigned long *bmap;
+    /* bitmap of pages that haven't been sent even once
+     * only maintained and used in postcopy at the moment
+     * where it's used to send the dirtymap at the start
+     * of the postcopy phase
+     */
+    unsigned long *unsentmap;
+    /* bitmap of already received pages in postcopy */
+    unsigned long *receivedmap;
+};
 
 ```
+
+
 
 
 
