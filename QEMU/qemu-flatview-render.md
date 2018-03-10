@@ -68,7 +68,7 @@ struct MemoryRegion {
     uint8_t vga_logging_count;                                                                                                                                         
     MemoryRegion *alias;     // 如果本mr是个alias mr，这个字段指向真实的mr，否则为NULL                                                                                                            
     hwaddr alias_offset;        //如果本mr是个alias mr，这个字段表示在真实的mr中的偏移                                                                                                             
-    int32_t priority;                                                                                                                                                  
+    int32_t priority;      //优先级，属于同一个mr的subregions中高优先级的mr会被优先渲染                                                                                                                                              
     QTAILQ_HEAD(subregions, MemoryRegion) subregions;                                                                                                                  
     QTAILQ_ENTRY(MemoryRegion) subregions_link;                                                                                                                        
     QTAILQ_HEAD(coalesced_ranges, CoalescedMemoryRange) coalesced;                                                                                                     

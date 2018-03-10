@@ -8,14 +8,12 @@ hugupage fs
 ## RAM blocks
 每个RAM类型的mr都会有一个RAMBlock *ram_block，
 
-
-
 ``` c
 struct RAMBlock {
-    struct rcu_head rcu;
-    struct MemoryRegion *mr;
-    uint8_t *host;
-    ram_addr_t offset;
+    struct rcu_head rcu;//读RAMBlock需要拿rcu读锁
+    struct MemoryRegion *mr;//对应的mr
+    uint8_t *host;//hva
+    ram_addr_t offset;//在所有RAMBlock space 中的偏移
     ram_addr_t used_length;
     ram_addr_t max_length;
     void (*resized)(const char*, uint64_t length, void *host);
@@ -43,16 +41,16 @@ struct RAMBlock {
 
 
 
-
-
 ## RAM Memory Region API
 QEMU具有多种类型的mr（比如RAM,ROM,MMIO,container,alias），官方文档给出了很详尽的解释：`docs/memory.txt`
 RAM类型的mr，物理机世界的内存条相似，可由guest OS直接访问而不会退到跟模式。
 简单介绍下RAM mr初始化相关的API：
-memory_region_init_ram:
-
-memory_region_init_ram_ptr:
-memory_region_init_from_file:
+**memory_region_init_ram**:
+最终分调用mmap分配匿名页类型的内存
+**memory_region_init_ram_ptr**:
+多传入了一个用户已经分配了内存的指针，不再去申请内存
+**memory_region_init_from_file**:
+利用fd映射虚拟内存
 
 ## refernce
 [QEMU Internals: How guest phtsical RAM works —— Hajnoczi
