@@ -62,10 +62,10 @@ struct MemoryRegion {
     void *opaque;                                                                                                                                                      
     MemoryRegion *container;   //父mr                                                                                                                                        
     Int128 size;         //mr的大小                                                                                                                  
-    hwaddr addr;      //相对父mr的偏移，起始GPA=base+addr 可以去源码中搜索一下如何初始化的就明白了                                                                                                        
+    hwaddr addr;      //相对父mr的偏移，起始GPA=base+addr                                                                                                        
     void (*destructor)(MemoryRegion *mr);                                                                                                                              
     uint64_t align;                                                                                                                                                    
-    bool terminates;                                                                                                                                                   
+    bool terminates;    //表示是否分配了内存，是否需要render                                                                                                                                               
     bool ram_device;                                                                                                                                                   
     bool enabled;                                                                                                                                                      
     bool warning_printed; /* For reservations */                                                                                                                       
