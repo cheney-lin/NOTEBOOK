@@ -349,7 +349,7 @@ last_ram_offset找到当前ram所占的物理地址空间的大小，find_ram_of
 至此object_add的流程就分析完了。
 
 ### qmp_device_add
-将新创建的dimm设备插入虚拟机
+创建dimm 设备并插入vm
 调用栈如下：
 ``` c
 qmp_device_add
