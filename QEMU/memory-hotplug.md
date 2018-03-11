@@ -154,7 +154,7 @@ qmp_object_add
                                 find_ram_offset(寻找新内存条可以映射的物理地址空间)
                                 qemu_anon_ram_alloc(phys_mem_alloc) 为内存条真正申请内存下面
 ```
-来看object_add做了什么:
+object_add主要创建了Host Memory backend:
 ``` c
 void qmp_object_add(const char *type, const char *id,
                     bool has_props, QObject *props, Error **errp)
@@ -164,7 +164,7 @@ void qmp_object_add(const char *type, const char *id,
     Object *obj;
 
     if (props) {
-        pdict = qobject_to_qdict(props);
+        pdict = qobject_to_qdict(props); //解析属性，比如内存大小、id等
         if (!pdict) {
             error_setg(errp, QERR_INVALID_PARAMETER_TYPE, "props", "dict");
             return;
@@ -193,7 +193,7 @@ arguments: {"qom-type": "memory-backend-ram", "props": {"size": 1073741824}, "id
 2018-02-14T16:59:05.542215+08:00|info|qemu[17053]|[17053]|do_qmp_dispatch[109]|: qmp_cmd_name: object-add, arguments: {"qom-type": "memory-backend-file", "props": {"share": true, "prealloc": true, "size": 67108864, "mem-path": "/dev/hugepages/libvirt/qemu/11-redhat_7.1"}, "id": "memdimm0"}
 ```
 
-user_creatable_complete用来创建“memory-backend-ram”设备，这个设备的相关定义在backends/hostmem-ram.c：
+user_creatable_complete用来实例化qom对象，把这个对象加入composition tree，对于普通内存来说是“memory-backend-ram”，对于大页内存来说就是"memory-backend-file"，相关定义在backends/hostmem-ram.c：
 ``` c
 #define TYPE_MEMORY_BACKEND_RAM "memory-backend-ram"
 
@@ -236,7 +236,7 @@ static void register_types(void)
 type_init(register_types);
 ```
 
-首先object_new，根据已有知识，这是设备对象的”构造函数”，对于”memory-backend-ram”来说没做什么，只是把对象类的相关函数注册了一下。
+首先object_new，根据已有知识，这是qom对象的”构造函数”，对于”memory-backend-ram”来说没做什么，只是把对象类的相关函数注册了一下。
 然后是object_property_set ，设置了相关属性，比如size等；再将”memory-backend-ram”对象作为child加入到container对象的属性hash表中，建立起两者的父子关系。(Object之间的关系见 https://wiki.qemu.org/Features/QOM)
 
 ``` c
