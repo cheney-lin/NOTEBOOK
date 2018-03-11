@@ -133,7 +133,7 @@ static int qemuDomainAttachDeviceFlags(virDomainPtr dom, const char *xml,
 3. 热插内存，也就是给qemu发qmp消息
 
 ## QEMU热插内存流程
-上文提到Libvirt向QEMU下发了两条qmp命令，QEMU侧的处理函数分别是qmp_object_add 和 qmp_device_add，以下的分析从这两个函数展开。
+上文提到Libvirt向QEMU下发了两条qmp命令，QEMU侧的处理函数分别是qmp_object_add 和 qmp_device_add，前者创建了QOM对象，后者创建了设备并将其初始化，以下的分析从这两个函数展开。
 ### qmp_object_add
 创建一个新的设备对象(memory后端设备)，dimm设备的创建在qmp_device_add流程中
 当后端设备类型为ram时调用栈如下：
