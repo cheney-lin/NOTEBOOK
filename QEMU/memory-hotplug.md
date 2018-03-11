@@ -139,7 +139,7 @@ static int qemuDomainAttachDeviceFlags(virDomainPtr dom, const char *xml,
 当后端设备类型为ram时调用栈如下：
 ``` c
 qmp_object_add
-    user_creatable_add_type
+    user_creatable_add_type //check是否继承了TYPE_USER_CREATABLE接口，是否为虚类等
         object_new
         object_property_set 设置size等属性
         object_property_add_child
