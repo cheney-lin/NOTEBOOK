@@ -154,7 +154,7 @@ qmp_object_add
                                 find_ram_offset(寻找新内存条可以映射的物理地址空间)
                                 qemu_anon_ram_alloc(phys_mem_alloc) 为内存条真正申请内存下面
 ```
-来看object_add做了什么:
+来看object_add主要创建了Host Memory Backend:
 ``` c
 void qmp_object_add(const char *type, const char *id,
                     bool has_props, QObject *props, Error **errp)
