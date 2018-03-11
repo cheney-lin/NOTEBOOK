@@ -236,7 +236,7 @@ static void register_types(void)
 type_init(register_types);
 ```
 
-首先object_new，根据已有知识，这是设备对象的”构造函数”，对于”memory-backend-ram”来说没做什么，只是把对象类的相关函数注册了一下。
+首先object_new，根据已有知识，这是对象的”构造函数”，对于”memory-backend-ram”来说没做什么，只是把对象类的相关函数注册了一下。
 然后是object_property_set ，设置了相关属性，比如size等；再将”memory-backend-ram”对象作为child加入到container对象的属性hash表中，建立起两者的父子关系。(Object之间的关系见 https://wiki.qemu.org/Features/QOM)
 
 ``` c
